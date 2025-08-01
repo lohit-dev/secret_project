@@ -74,8 +74,8 @@ describe('Resolving example', () => {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0x7Fccdf989ef2Ef0843601C512d9f8e0f2b255308",
-            resolver: "0x020141BC26aE8bFbC3CB08D66f1F91769FcE18fA"
+            escrowFactory: "0x043349B05fCb4BC5A333cfa6Ea9f8c3bFa7fc166",
+            resolver: "0xE539C35F7416b4d4ac2314d67a03B114717Ed495"
         }
 
         dst = {
@@ -83,9 +83,10 @@ describe('Resolving example', () => {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0xDfE7711ad1F5A22F7007fD1693af453740A6C8A9",
-            resolver: "0x958D37C6c616bCA939ee189a5741fc2AAd422F1C"
+            escrowFactory: "0x79Ca1e95d23d13dC8CcBf86de28FC89d61e1c839",
+            resolver: "0xb2E79cD69Ee0bA7a431BBab2585ae2Bd9019F68C"
         }
+        // return
 
         srcChainUser = new Wallet(userPk, src.provider)
         dstChainUser = new Wallet(userPk, dst.provider)
