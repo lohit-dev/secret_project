@@ -93,7 +93,7 @@ export class Wallet {
     }
 
     async send(param: TransactionRequest): Promise<{ txHash: string; blockTimestamp: bigint; blockHash: string }> {
-        const res = await this.signer.sendTransaction({ ...param, gasLimit: 10_000_00, from: this.getAddress() })
+        const res = await this.signer.sendTransaction({ ...param, gasLimit: 5000_000, from: this.getAddress() })
         console.log("Transaction sent:", JSON.stringify(res, null, 2))
         const receipt = await res.wait(1)
 

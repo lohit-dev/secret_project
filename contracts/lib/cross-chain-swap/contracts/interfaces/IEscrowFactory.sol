@@ -40,7 +40,7 @@ interface IEscrowFactory {
      * @param srcImmutables The immutables of the escrow contract that are used in deployment on the source chain.
      * @param dstImmutablesComplement Additional immutables related to the escrow contract on the destination chain.
      */
-    event SrcEscrowCreated(IBaseEscrow.Immutables srcImmutables, DstImmutablesComplement dstImmutablesComplement);
+    event SrcEscrowCreated(IBaseEscrow.Immutables srcImmutables, DstImmutablesComplement dstImmutablesComplement, address escrow);
     /**
      * @notice Emitted on EscrowDst deployment.
      * @param escrow The address of the created escrow.

@@ -69,30 +69,40 @@ describe('Resolving example', () => {
 
     beforeAll(async () => {
         console.log("1,....");
-        ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
-        // src = {
-        //     provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
-        //         cacheTimeout: -1,
-        //         staticNetwork: true
-        //     }),
-        //     escrowFactory: "0x043349B05fCb4BC5A333cfa6Ea9f8c3bFa7fc166",
-        //     resolver: "0xE539C35F7416b4d4ac2314d67a03B114717Ed495"
-        // };
+        // ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
+        src = {
+            provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
+                cacheTimeout: -1,
+                staticNetwork: true
+            }),
+            escrowFactory: "0x12200abc572C79E2232B2cEdf6dF4D2be85203Bf",
+            resolver: "0x79DED6f871A83b7C178dFF7a1f91C81e33aC3Bb5"
+        };
 
-        // dst = {
-        //     provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
-        //         cacheTimeout: -1,
-        //         staticNetwork: true
-        //     }),
-        //     escrowFactory: "0x79Ca1e95d23d13dC8CcBf86de28FC89d61e1c839",
-        //     resolver: "0xb2E79cD69Ee0bA7a431BBab2585ae2Bd9019F68C"
-        // };
+        dst = {
+            provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
+                cacheTimeout: -1,
+                staticNetwork: true
+            }),
+            escrowFactory: "0x7E030bC01EBFca5c1088f7f281D0c73bb8C50D54",
+            resolver: "0x5433b49Ce1c378BfA22aD2c77aCe846a6d8F6fB9"
+        };
         // return
 
+        
         srcChainUser = new Wallet(userPk, src.provider);
         dstChainUser = new Wallet(userPk, dst.provider);
         srcChainResolver = new Wallet(resolverPk, src.provider);
         dstChainResolver = new Wallet(resolverPk, dst.provider);
+
+        console.log("Sending USDC to resolver...");
+        await dstChainUser.transferToken(
+            config.chain.destination.tokens.USDC.address,
+            await dstChainResolver.getAddress(),
+            parseEther('1000')
+        );
+
+
 
         srcFactory = new EscrowFactory(src.provider, src.escrowFactory);
         dstFactory = new EscrowFactory(dst.provider, dst.escrowFactory);
@@ -126,7 +136,7 @@ describe('Resolving example', () => {
         // top up contract for approve
         console.log("5,....");
         // await dstChainResolver.transfer(dst.resolver, parseEther('0.01'))
-        // await dstResolverContract.unlimitedApprove(config.chain.destination.tokens.USDC.address, dst.escrowFactory)
+        await dstResolverContract.unlimitedApprove(config.chain.destination.tokens.USDC.address, dst.escrowFactory)
 
         console.log("6,....");
         srcTimestamp = BigInt((await src.provider.getBlock('latest'))!.timestamp);
@@ -279,7 +289,6 @@ describe('Resolving example', () => {
                 .withTaker(new Address(resolverContract.dstAddress));
 
             console.log(`Dest Immutables`, dstImmutables.build());
-            console.log(`Dest Immutables`, JSON.stringify(dstImmutables, null, 2));
 
 
             console.log(`[${dstChainId}]`, `Depositing ${dstImmutables.amount} for order ${orderHash}`);
