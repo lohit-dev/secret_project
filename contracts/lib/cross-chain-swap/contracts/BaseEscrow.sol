@@ -99,9 +99,10 @@ abstract contract BaseEscrow is IBaseEscrow {
      * @return ret The computed hash.
      */
     function _keccakBytes32(bytes32 secret) private pure returns (bytes32 ret) {
-        assembly ("memory-safe") {
-            mstore(0, secret)
-            ret := keccak256(0, 0x20)
-        }
+        // assembly ("memory-safe") {
+        //     mstore(0, secret)
+        //     ret := keccak256(0, 0x20)
+        // }
+        return sha256(abi.encodePacked(secret));
     }
 }

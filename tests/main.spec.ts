@@ -70,13 +70,14 @@ describe('Resolving example', () => {
     beforeAll(async () => {
         console.log("1,....");
         // ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
+        // working code .
         src = {
             provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0x12200abc572C79E2232B2cEdf6dF4D2be85203Bf",
-            resolver: "0x79DED6f871A83b7C178dFF7a1f91C81e33aC3Bb5"
+            escrowFactory: "0xe80CF7Ae2E3Cb8851C8F289bA4d622Cf7B6be5a8",
+            resolver: "0x6531A36F91e9A176594C953B3c57617031Ea7E8f"
         };
 
         dst = {
@@ -84,8 +85,8 @@ describe('Resolving example', () => {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0x7E030bC01EBFca5c1088f7f281D0c73bb8C50D54",
-            resolver: "0x5433b49Ce1c378BfA22aD2c77aCe846a6d8F6fB9"
+            escrowFactory: "0x3cbF8736FB94c4aF293aAbF601dAecBdba9f8643",
+            resolver: "0xc7C07A6ffEA321a0244d547898a6096570725DA2"
         };
         // return
 
@@ -98,7 +99,7 @@ describe('Resolving example', () => {
         console.log("Sending USDC to resolver...");
         await dstChainUser.transferToken(
             config.chain.destination.tokens.USDC.address,
-            await dstChainResolver.getAddress(),
+            dst.resolver,
             parseEther('1000')
         );
 
