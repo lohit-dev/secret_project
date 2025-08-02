@@ -1,3 +1,4 @@
+/* eslint-disable */
 import 'dotenv/config';
 import { expect, jest } from '@jest/globals';
 
@@ -68,24 +69,24 @@ describe('Resolving example', () => {
 
     beforeAll(async () => {
         console.log("1,....");
-        // ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)])
-        src = {
-            provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
-                cacheTimeout: -1,
-                staticNetwork: true
-            }),
-            escrowFactory: "0x043349B05fCb4BC5A333cfa6Ea9f8c3bFa7fc166",
-            resolver: "0xE539C35F7416b4d4ac2314d67a03B114717Ed495"
-        };
+        ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
+        // src = {
+        //     provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
+        //         cacheTimeout: -1,
+        //         staticNetwork: true
+        //     }),
+        //     escrowFactory: "0x043349B05fCb4BC5A333cfa6Ea9f8c3bFa7fc166",
+        //     resolver: "0xE539C35F7416b4d4ac2314d67a03B114717Ed495"
+        // };
 
-        dst = {
-            provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
-                cacheTimeout: -1,
-                staticNetwork: true
-            }),
-            escrowFactory: "0x79Ca1e95d23d13dC8CcBf86de28FC89d61e1c839",
-            resolver: "0xb2E79cD69Ee0bA7a431BBab2585ae2Bd9019F68C"
-        };
+        // dst = {
+        //     provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
+        //         cacheTimeout: -1,
+        //         staticNetwork: true
+        //     }),
+        //     escrowFactory: "0x79Ca1e95d23d13dC8CcBf86de28FC89d61e1c839",
+        //     resolver: "0xb2E79cD69Ee0bA7a431BBab2585ae2Bd9019F68C"
+        // };
         // return
 
         srcChainUser = new Wallet(userPk, src.provider);
