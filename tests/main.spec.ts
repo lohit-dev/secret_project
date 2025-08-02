@@ -4,7 +4,7 @@ import { expect, jest } from '@jest/globals';
 
 import { createServer, CreateServerReturnType } from 'prool';
 import { anvil } from 'prool/instances';
-
+import axios from 'axios';
 import Sdk from '@1inch/cross-chain-sdk';
 import {
     computeAddress,
@@ -90,18 +90,18 @@ describe('Resolving example', () => {
         };
         // return
 
-        
+
         srcChainUser = new Wallet(userPk, src.provider);
         dstChainUser = new Wallet(userPk, dst.provider);
         srcChainResolver = new Wallet(resolverPk, src.provider);
         dstChainResolver = new Wallet(resolverPk, dst.provider);
 
-        console.log("Sending USDC to resolver...");
-        await dstChainUser.transferToken(
-            config.chain.destination.tokens.USDC.address,
-            dst.resolver,
-            parseEther('1000')
-        );
+        // console.log("Sending USDC to resolver...");
+        // await dstChainUser.transferToken(
+        //     config.chain.destination.tokens.USDC.address,
+        //     dst.resolver,
+        //     parseEther('1000')
+        // );
 
 
 
@@ -109,19 +109,19 @@ describe('Resolving example', () => {
         dstFactory = new EscrowFactory(dst.provider, dst.escrowFactory);
 
         console.log("2,....");
-        // get 1000 USDC for user in SRC chain and approve to LOP
+        // get 1000 USDC for user in SRC chain and approve to LOP;
         // await srcChainUser.topUpFromDonor(
         //     config.chain.source.tokens.USDC.address,
         //     config.chain.source.tokens.USDC.donor,
         //     parseUnits('1000', 18)
-        // )
+        // );
 
-        console.log("3,....");
-        await srcChainUser.approveToken(
-            config.chain.source.tokens.USDC.address,
-            config.chain.source.limitOrderProtocol,
-            MaxUint256
-        );
+        // console.log("3,....");
+        // await srcChainUser.approveToken(
+        //     config.chain.source.tokens.USDC.address,
+        //     config.chain.source.limitOrderProtocol,
+        //     MaxUint256
+        // );
 
         console.log("4,....");
         // get 2000 USDC for resolver in DST chain
@@ -134,12 +134,12 @@ describe('Resolving example', () => {
         //     parseUnits('2000', 18)
         // )
 
-        // top up contract for approve
-        console.log("5,....");
-        // await dstChainResolver.transfer(dst.resolver, parseEther('0.01'))
-        await dstResolverContract.unlimitedApprove(config.chain.destination.tokens.USDC.address, dst.escrowFactory)
+        // // top up contract for approve
+        // console.log("5,....");
+        // // await dstChainResolver.transfer(dst.resolver, parseEther('0.01'))
+        // await dstResolverContract.unlimitedApprove(config.chain.destination.tokens.USDC.address, dst.escrowFactory);
 
-        console.log("6,....");
+        // console.log("6,....");
         srcTimestamp = BigInt((await src.provider.getBlock('latest'))!.timestamp);
     });
 
@@ -223,11 +223,102 @@ describe('Resolving example', () => {
                     allowMultipleFills: false
                 }
             );
+            // {
+            //     "payload order": {
+            //       "salt": "42",
+            //       "makerAsset": "0x1b150538e943f00127929f7eeb65754f7beb0b6d",
+            //       "takerAsset": "0xea2bb31ebb0aee264aba3730c8744d6bd76d37d0",
+            //       "maker": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+            //       "receiver": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+            //       "makingAmount": 100000000000000000000,
+            //       "takingAmount": 100000000000000000000,
+            //       "makerTraits": "0"
+            //     },
+            //     "orderType": "single_fill",
+            //     "srcChainId": 84532,
+            //     "dstChainId": 10143,
+            //     "deadline": 123456789,
+            //     "secrets" :[
+            //         {
+            //             "index": 0,
+            //             "secretHash": "5df6e0e2761359d30a8275058e299fcc0381534545f55cf43e41983f5d4c9456"
+            //         }
+            //     ],
+            //     "signature": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1b",
+            //     "extension": "0x",
+            //     "quoteId": "test-quote-123"
+            //   }
+            // Build the payload from our order, matching the payload order fields exactly
 
             const signature = await srcChainUser.signOrder(srcChainId, order);
+            console.log("sdk sig hash", Sdk.HashLock.forSingleFill(secret).toString());
+            console.log("secret", secret);
+            console.log("secery sha hash", ethers.sha256(secret));
+            //0xcfa2169db3c5975f50e18328475c81fd0a3379394ec2db548bd275d616fd72085888bd85f2f5193373f3498fe845a928f3ac6ab0a5f5abe79d070881ae64aa641c
+
+            // r: '0xcfa2169db3c5975f50e18328475c81fd0a3379394ec2db548bd275d616fd7208',
+            // vs: '0xd888bd85f2f5193373f3498fe845a928f3ac6ab0a5f5abe79d070881ae64aa64'
             console.log("the signature", signature);
             const orderHash = order.getOrderHash(srcChainId);
             console.log("the order hash", orderHash);
+
+            console.log("order", order.build());
+            console.log("extesnion data", order.extension);
+            const { r, yParityAndS: vs } = Signature.from(signature);
+            console.log("r", r);
+            console.log("vs", vs);
+            const resolverContractsss = new Resolver(src.resolver, dst.resolver);
+            const src_immutables = (order.toSrcImmutables(srcChainId, new Sdk.Address(resolverContractsss.srcAddress), order.makingAmount, order.escrowExtension.hashLockInfo).build());
+            console.log("🚀 ~ src_immutables:", src_immutables);
+            const { args: args_src, trait: trait_src } = Sdk.TakerTraits.default()
+                .setExtension(order.extension)
+                .setAmountMode(Sdk.AmountMode.maker)
+                .setAmountThreshold(order.takingAmount)
+                .encode();
+            console.log("🚀 ~ trait_src:", trait_src);
+            console.log("🚀 ~ args_src:", args_src);
+            const payload = {
+                order: {
+                    salt: order.salt.toString(),
+                    maker_asset: order.makerAsset.toString(),
+                    taker_asset: order.takerAsset.toString(),
+                    maker: order.maker.toString(),
+                    receiver: order.receiver.toString(),
+                    making_amount: order.makingAmount.toString(),
+                    taking_amount: order.takingAmount.toString(),
+                    maker_traits: order.build().makerTraits
+                },
+                taker: src.resolver,
+                args: args_src.toString(),
+                taker_traits: trait_src.toString(),
+                order_hash: orderHash,
+                order_type: "single_fill",
+                src_chain_id: srcChainId,
+                dst_chain_id: dstChainId,
+                timelock: src_immutables.timelocks,
+                deadline: Math.floor(Date.now() / 1000) + 3600,
+                secrets: [{
+                    index: 0,
+                    secret_hash: ethers.sha256(secret)
+                }],
+                signature: {
+                    r: r.toString(),
+                    vs: vs.toString()
+                },
+                extension: order.extension,
+            };
+            console.log("payload", payload);
+
+            // Make a POST request to the relayer endpoint with the payload using axios
+
+            const response = await axios.post('http://10.67.21.17:4455/relayer/submit', payload, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            console.log("Relayer response:", response.data);
+
+
+
+            return;
 
             // const recoveredAddress = ethers.verifyMessage(orderHash);
             // Resolver fills order
@@ -249,7 +340,7 @@ describe('Resolving example', () => {
             const resolverContractWithSigner = resolverContractInstance.connect(srcChainResolver.signer);
 
             // Prepare parameters for deploySrc (same as in the original deploySrc method)
-            const { r, yParityAndS: vs } = Signature.from(signature);
+            // const { r, yParityAndS: vs } = Signature.from(signature);
             const { args, trait } = Sdk.TakerTraits.default()
                 .setExtension(order.extension)
                 .setAmountMode(Sdk.AmountMode.maker)
@@ -260,7 +351,8 @@ describe('Resolving example', () => {
             console.log("Immutables for src deploy", immutables.build());
             console.log("Order for src deploy", order.build());
             console.log("Signature for src deploy", { r, vs, fillAmount, trait, args });
-
+            // wait for 30 secs
+            // await new Promise((resolve) => setTimeout(resolve, 30000));
             // Call deploySrc directly on the contract
             const tx = await (resolverContractWithSigner as any).deploySrc(
                 immutables.build(),
