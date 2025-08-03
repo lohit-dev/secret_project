@@ -25,10 +25,42 @@ const fromEnv = ConfigSchema.parse(process.env)
 */
 export const config = {
     chain: {
-        destination: {
-            chainId: 84532,
-            // url: "https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV",
+        // destination: {
+        //     chainId: 84532,
+        //     // url: "https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV",
+        //     url: fromEnv.SRC_CHAIN_RPC,
+        //     // createFork: fromEnv.SRC_CHAIN_CREATE_FORK,
+        //     // limitOrderProtocol: '0x4B715df6F89624dDb2c6DB70304b494d79531d92', // my deploy
+        //     limitOrderProtocol: '0xf850CF9A70Fe8279F49739F1A14528D8BCe675e2', // my deploy2
+        //     wrappedNative: '0xB0E39d4745eCe7C843834956e11cb16d68157be9', // my deployed
+        //     ownerPrivateKey: '0x639ed7560cbdde79096973912f5c83de86ba08aef2ce6f673dad5bf0a1663801', // my private key 
+        //     tokens: {
+        //         USDC: {
+        //             address: '0x19eAC199abcc6f8dDe59198fcA5d44513B519368', // erc20 mock deployed
+        //             donor: '0x1B150538E943F00127929f7eeB65754f7beB0B6d'
+        //         }
+        //     }
+        // },
+        
+        source: {
+            chainId: 10143,
+            // url: "https://monad-testnet.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV",
             url: fromEnv.SRC_CHAIN_RPC,
+            // createFork: fromEnv.DST_CHAIN_CREATE_FORK,
+            limitOrderProtocol: '0xf850CF9A70Fe8279F49739F1A14528D8BCe675e2', // my deployed
+            wrappedNative: '0xB0E39d4745eCe7C843834956e11cb16d68157be9', // our deployed 
+            ownerPrivateKey: '0x639ed7560cbdde79096973912f5c83de86ba08aef2ce6f673dad5bf0a1663801',
+            tokens: {
+                USDC: {
+                    address: '0x19eAC199abcc6f8dDe59198fcA5d44513B519368', // same native
+                    donor: '0x1B150538E943F00127929f7eeB65754f7beB0B6d' // 
+                }
+            }
+        },
+        destination : {
+            chainId: 128123,
+            // url: "https://rpc.ankr.com/etherlink_testnet",
+            url: fromEnv.DST_CHAIN_RPC,
             // createFork: fromEnv.SRC_CHAIN_CREATE_FORK,
             // limitOrderProtocol: '0x4B715df6F89624dDb2c6DB70304b494d79531d92', // my deploy
             limitOrderProtocol: '0xf850CF9A70Fe8279F49739F1A14528D8BCe675e2', // my deploy2
@@ -38,22 +70,6 @@ export const config = {
                 USDC: {
                     address: '0x19eAC199abcc6f8dDe59198fcA5d44513B519368', // erc20 mock deployed
                     donor: '0x1B150538E943F00127929f7eeB65754f7beB0B6d'
-                }
-            }
-        },
-        
-        source: {
-            chainId: 10143,
-            // url: "https://monad-testnet.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV",
-            url: fromEnv.DST_CHAIN_RPC,
-            // createFork: fromEnv.DST_CHAIN_CREATE_FORK,
-            limitOrderProtocol: '0xf850CF9A70Fe8279F49739F1A14528D8BCe675e2', // my deployed
-            wrappedNative: '0xB0E39d4745eCe7C843834956e11cb16d68157be9', // our deployed 
-            ownerPrivateKey: '0x639ed7560cbdde79096973912f5c83de86ba08aef2ce6f673dad5bf0a1663801',
-            tokens: {
-                USDC: {
-                    address: '0x19eAC199abcc6f8dDe59198fcA5d44513B519368', // same native
-                    donor: '0x1B150538E943F00127929f7eeB65754f7beB0B6d' // 
                 }
             }
         }
@@ -68,12 +84,12 @@ export type ChainConfig = (typeof config.chain)['source' | 'destination']
 //             url: fromEnv.SRC_CHAIN_RPC,
 //             // createFork: fromEnv.SRC_CHAIN_CREATE_FORK,
 //             // limitOrderProtocol: '0x4B715df6F89624dDb2c6DB70304b494d79531d92', // my deploy
-//             limitOrderProtocol: '0x9f2C105C9b1843019836889539C9F6993D3aa239', // my deploy2
-//             wrappedNative: '0x75DBDb60C37A9c776206F2e44D2098054222af65', // my deployed
+//             limitOrderProtocol: '0xf850CF9A70Fe8279F49739F1A14528D8BCe675e2', // my deploy2
+//             wrappedNative: '0xB0E39d4745eCe7C843834956e11cb16d68157be9', // my deployed
 //             ownerPrivateKey: '0x639ed7560cbdde79096973912f5c83de86ba08aef2ce6f673dad5bf0a1663801', // my private key 
 //             tokens: {
 //                 USDC: {
-//                     address: '0x6756682b6144018deA5416640A0d0e8783e33F60', // erc20 mock deployed
+//                     address: '0x19eAC199abcc6f8dDe59198fcA5d44513B519368', // erc20 mock deployed
 //                     donor: '0x1B150538E943F00127929f7eeB65754f7beB0B6d'
 //                 }
 //             }
