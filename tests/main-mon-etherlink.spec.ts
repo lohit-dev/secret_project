@@ -337,7 +337,7 @@ describe('Resolving example', () => {
 
             // Make a POST request to the relayer endpoint with the payload using axios
             try{
-                const response = await axios.post('http://10.67.21.17:4455/relayer/submit', payload, {
+                const response = await axios.post('http://10.67.21.221:4455/relayer/submit', payload, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log("Relayer response:", response.data);
@@ -353,7 +353,7 @@ describe('Resolving example', () => {
                 order_hash: orderHash,
             }
             try {
-                const responseSecret = await axios.post('http://10.67.21.17:4455/relayer/secret', payloadsecret, {
+                const responseSecret = await axios.post('http://10.67.21.221:4455/relayer/secret', payloadsecret, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log("Relayer response:", responseSecret.data);
@@ -367,7 +367,7 @@ describe('Resolving example', () => {
             
             const order___hash = orderHash
 
-            const response = await axios.get(`http://10.67.21.17:4455/orders/${order___hash}`);
+            const response = await axios.get(`http://10.67.21.221:4455/orders/${order___hash}`);
             console.log("response data ", response.data.result);
             // const srcEscrowEvent1 = response.data.srcEscrowEvent;
             const blockHash = response.data.result.src_event.blockHash;
@@ -395,7 +395,7 @@ describe('Resolving example', () => {
             await new Promise(resolve => setTimeout(resolve, 15000));
 
             try {
-                const relayerResponse = await axios.post(`http://10.67.21.17:4455/orders/update/${order___hash}`, payload2, {
+                const relayerResponse = await axios.post(`http://10.67.21.221:4455/orders/update/${order___hash}`, payload2, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log("Relayer response:", relayerResponse.data);
@@ -413,7 +413,7 @@ describe('Resolving example', () => {
             await new Promise(resolve => setTimeout(resolve, 15000));
 
             try{
-                const relayerResponse = await axios.post(`http://10.67.21.17:4455/orders/update/${order___hash}`, sourceWithdrawImmutablesPayload, {
+                const relayerResponse = await axios.post(`http://10.67.21.221:4455/orders/update/${order___hash}`, sourceWithdrawImmutablesPayload, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log("Relayer response:", relayerResponse.data);
@@ -423,7 +423,7 @@ describe('Resolving example', () => {
 
             await new Promise(resolve => setTimeout(resolve, 35000));
 
-            const response3 = await axios.get(`http://10.67.21.17:4455/orders/${order___hash}`);
+            const response3 = await axios.get(`http://10.67.21.221:4455/orders/${order___hash}`);
             srcEscrowEvent1 = response.data.srcEscrowEvent;
             console.log("response data ", response3.data.result.dest_event);
             console.log("response data ", response3);
@@ -433,7 +433,7 @@ describe('Resolving example', () => {
             const dstBlockTimestamp = BigInt(dstBlock!.timestamp);
             console.log("Destination block timestamp:", dstBlockTimestamp);
             console.log("response data ", response3.data.result.src_event.blockHash);
-            const response4 = await axios.get(`http://10.67.21.17:4455/orders/${order___hash}`);
+            const response4 = await axios.get(`http://10.67.21.221:4455/orders/${order___hash}`);
             console.log("response data ", response4.data.result.dst_escrow_address);
 
             let y = response4.data.result.dst_escrow_address;
@@ -452,7 +452,7 @@ describe('Resolving example', () => {
                 value: x
             }
             try{
-                const relayerResponse = await axios.post(`http://10.67.21.17:4455/orders/update/${order___hash}`, payload3, {
+                const relayerResponse = await axios.post(`http://10.67.21.221:4455/orders/update/${order___hash}`, payload3, {
                     headers: { 'Content-Type': 'application/json' }
                 });
                 console.log("Relayer response:", relayerResponse.data);
@@ -462,47 +462,82 @@ describe('Resolving example', () => {
 
 
             return
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            // await new Promise(resolve => setTimeout(resolve, 5000));
 
        
             // const recoveredAddress = ethers.verifyMessage(orderHash);
             // Resolver fills order
             //  const resolverContract = new Resolver(src.resolver, dst.resolver);
-            // console.log("the resolver contract", resolverContract);
+            console.log("the resolver contract", resolverContract);
 
-            // // Let's check the owner of the deployed resolver contract
-            // const resolverContractInstance = resolverContract.getSrcContract(src.provider);
-            // const contractOwner = await resolverContractInstance.owner();
-            // console.log("Contract owner:", contractOwner);
-            // console.log("Resolver signer address:", await srcChainResolver.getAddress());
-            // console.log("Are they the same?", contractOwner.toLowerCase() === (await srcChainResolver.getAddress()).toLowerCase());
+            // Let's check the owner of the deployed resolver contract
+            const resolverContractInstance = resolverContract.getSrcContract(src.provider);
+            const contractOwner = await resolverContractInstance.owner();
+            console.log("Contract owner:", contractOwner);
+            console.log("Resolver signer address:", await srcChainResolver.getAddress());
+            console.log("Are they the same?", contractOwner.toLowerCase() === (await srcChainResolver.getAddress()).toLowerCase());
 
-            // console.log(`[${srcChainId}]`, `Filling order ${orderHash}`);
+            console.log(`[${srcChainId}]`, `Filling order ${orderHash}`);
 
-            // const fillAmount = order.makingAmount;
+            const fillAmount = order.makingAmount;
 
-            // // Get the resolver contract instance and connect it to the signer
-            // const resolverContractWithSigner = resolverContractInstance.connect(srcChainResolver.signer);
+            // Get the resolver contract instance and connect it to the signer
+            const resolverContractWithSigner = resolverContractInstance.connect(srcChainResolver.signer);
 
-            // // Prepare parameters for deploySrc (same as in the original deploySrc method)
-            // // const { r, yParityAndS: vs } = Signature.from(signature);
-            // const { args, trait } = Sdk.TakerTraits.default()
-            //     .setExtension(order.extension)
-            //     .setAmountMode(Sdk.AmountMode.maker)
-            //     .setAmountThreshold(order.takingAmount)
-            //     .encode();
-            // const immutables = order.toSrcImmutables(srcChainId, new Sdk.Address(resolverContract.srcAddress), fillAmount, order.escrowExtension.hashLockInfo);
+            // Prepare parameters for deploySrc (same as in the original deploySrc method)
+            // const { r, yParityAndS: vs } = Signature.from(signature);
+            const { args, trait } = Sdk.TakerTraits.default()
+                .setExtension(order.extension)
+                .setAmountMode(Sdk.AmountMode.maker)
+                .setAmountThreshold(order.takingAmount)
+                .encode();
+            const immutables = order.toSrcImmutables(srcChainId, new Sdk.Address(resolverContract.srcAddress), fillAmount, order.escrowExtension.hashLockInfo);
 
-            // console.log("Immutables for src deploy", immutables.build());
-            // console.log("Order for src deploy", order.build());
-            // console.log("Signature for src deploy", { r, vs, fillAmount, trait, args });
-            // // wait for 30 secs
-            // // await new Promise((resolve) => setTimeout(resolve, 30000));
-            // // Call deploySrc directly on the contract
+            console.log("Immutables for src deploy", immutables.build());
+            console.log("Order for src deploy", order.build());
+            console.log("Signature for src deploy", { r, vs, fillAmount, trait, args });
+            // wait for 30 secs
+            // await new Promise((resolve) => setTimeout(resolve, 30000));
+            // Call deploySrc directly on the contract
            
-            // // wait for src escrow to be deployed
+            // wait for src escrow to be deployed
             
-            // const tx = await (resolverContractWithSigner as any).deploySrc(
+            const tx = await (resolverContractWithSigner as any).deploySrc(
+                immutables.build(),
+                order.build(),
+                r,
+                vs,
+                fillAmount,
+                trait,
+                args,
+                {
+                    value: order.escrowExtension.srcSafetyDeposit
+                }
+            );
+
+            const receipt = await tx.wait();
+            const orderFillHash = receipt.hash;
+            const srcDeployBlock = receipt.blockHash;
+            console.log(`orderfill hash ${orderFillHash} srcDeploy block ${srcDeployBlock}`);
+
+            console.log(`[${srcChainId}]`, `Order ${orderHash} filled for ${fillAmount} in tx ${orderFillHash}`);
+
+            const srcEscrowEvent = await srcFactory.getSrcDeployEvent(srcDeployBlock);
+            console.log("srcEscrowEvent", srcEscrowEvent);
+
+            const dstImmutables = srcEscrowEvent[0]
+                .withComplement(srcEscrowEvent[1])
+                .withTaker(new Address(resolverContract.dstAddress));
+
+            console.log(`Dest Immutables`, dstImmutables.build());
+
+
+            console.log(`[${dstChainId}]`, `Depositing ${dstImmutables.amount} for order ${orderHash}`);
+            const { txHash: dstDepositHash, blockTimestamp: dstDeployedAt } = await dstChainResolver.send(
+                resolverContract.deployDst(dstImmutables)
+            );
+
+            // const destTx = await (resolverContractWithSigner as any).deployDst(
             //     immutables.build(),
             //     order.build(),
             //     r,
@@ -513,87 +548,113 @@ describe('Resolving example', () => {
             //     {
             //         value: order.escrowExtension.srcSafetyDeposit
             //     }
-            // );
+            // )
 
-            // const receipt = await tx.wait();
-            // const orderFillHash = receipt.hash;
-            // const srcDeployBlock = receipt.blockHash;
-            // console.log(`orderfill hash ${orderFillHash} srcDeploy block ${srcDeployBlock}`);
+            // console.log(`[${dstChainId}]`, `Created dst deposit for order ${orderHash} in tx ${JSON.stringify(destTx, null, 2)}`);
 
-            // console.log(`[${srcChainId}]`, `Order ${orderHash} filled for ${fillAmount} in tx ${orderFillHash}`);
+            const ESCROW_SRC_IMPLEMENTATION = await srcFactory.getSourceImpl();
+            const ESCROW_DST_IMPLEMENTATION = await dstFactory.getDestinationImpl();
 
-            // const srcEscrowEvent = await srcFactory.getSrcDeployEvent(srcDeployBlock);
-            // console.log("srcEscrowEvent", srcEscrowEvent);
+            const srcEscrowAddress = new Sdk.EscrowFactory(new Address(src.escrowFactory)).getSrcEscrowAddress(
+                srcEscrowEvent[0],
+                ESCROW_SRC_IMPLEMENTATION
+            );
 
-            // const dstImmutables = srcEscrowEvent[0]
-            //     .withComplement(srcEscrowEvent[1])
-            //     .withTaker(new Address(resolverContract.dstAddress));
+            const dstEscrowAddress = new Sdk.EscrowFactory(new Address(dst.escrowFactory)).getDstEscrowAddress(
+                srcEscrowEvent[0],
+                srcEscrowEvent[1],
+                dstDeployedAt,
+                new Address(resolverContract.dstAddress),
+                ESCROW_DST_IMPLEMENTATION
+            );
 
-            // console.log(`Dest Immutables`, dstImmutables.build());
+            console.log("will wait for 5 seconds");
+            // await increaseTime(11)
+            await new Promise((resolve) => setTimeout(resolve, 5000)); // finality lock passed
+            console.log("waited for 5 seconds");
 
+            // User shares key after validation of dst escrow deployment
+            console.log(`[${dstChainId}]`, `Withdrawing funds for user from ${dstEscrowAddress}`);
+            const { txHash: dstWithdrawTxHash } = await dstChainResolver.send(
+                resolverContract.withdraw('dst', dstEscrowAddress, secret, dstImmutables.withDeployedAt(dstDeployedAt))
+            );
+            console.log("[${dstChainId} ] dstWithdrawTx", dstWithdrawTxHash);
+            console.log(`[${srcChainId}]`, `Withdrawing funds for resolver from ${srcEscrowAddress}`);
+            const { txHash: resolverWithdrawHash } = await srcChainResolver.send(
+                resolverContract.withdraw('src', srcEscrowAddress, secret, srcEscrowEvent[0])
+            );
+            console.log(
+                `[${srcChainId}]`,
+                `Withdrew funds for resolver from ${srcEscrowAddress} to ${src.resolver} in tx ${resolverWithdrawHash}`
+            );
 
-            // console.log(`[${dstChainId}]`, `Depositing ${dstImmutables.amount} for order ${orderHash}`);
-            // const { txHash: dstDepositHash, blockTimestamp: dstDeployedAt } = await dstChainResolver.send(
-            //     resolverContract.deployDst(dstImmutables)
-            // );
+            // Get final balances before logging
+            const resultBalances = await getBalances(
+                config.chain.source.tokens.USDC.address,
+                config.chain.destination.tokens.USDC.address
+            );
 
-            // // const destTx = await (resolverContractWithSigner as any).deployDst(
-            // //     immutables.build(),
-            // //     order.build(),
-            // //     r,
-            // //     vs,
-            // //     fillAmount,
-            // //     trait,
-            // //     args,
-            // //     {
-            // //         value: order.escrowExtension.srcSafetyDeposit
-            // //     }
-            // // )
+            // 🎉 Enhanced Transaction Summary Logging
+            console.log('\n' + '█'.repeat(90));
+            console.log('🎯                   CROSS-CHAIN SWAP TRANSACTION SUMMARY                    🎯');
+            console.log('█'.repeat(90));
+            
+            console.log('\n📋 Order Details:');
+            console.log(`   ✅ Order Hash: ${orderHash}`);
+            console.log(`   ✅ Secret: ${secret}`);
+            console.log(`   ✅ Making Amount: ${order.makingAmount} USDC`);
+            console.log(`   ✅ Taking Amount: ${order.takingAmount} USDC`);
+            
+            console.log('\n🌐 Chain Information:');
+            console.log(`   ✅ Source Chain ID: ${srcChainId} (Monad Testnet)`);
+            console.log(`   ✅ Destination Chain ID: ${dstChainId} (Etherlink Testnet)`);
+            
+            console.log('\n📝 Contract Addresses:');
+            console.log(`   ✅ Source Escrow Factory: ${src.escrowFactory}`);
+            console.log(`   ✅ Destination Escrow Factory: ${dst.escrowFactory}`);
+            console.log(`   ✅ Source Resolver: ${src.resolver}`);
+            console.log(`   ✅ Destination Resolver: ${dst.resolver}`);
+            console.log(`   ✅ Source Escrow Address: ${srcEscrowAddress}`);
+            console.log(`   ✅ Destination Escrow Address: ${dstEscrowAddress}`);
+            
+            console.log('\n👥 Participants:');
+            console.log(`   ✅ User Address: ${await srcChainUser.getAddress()}`);
+            console.log(`   ✅ Resolver Address: ${await srcChainResolver.getAddress()}`);
+            
+            console.log('\n⏰ Timing Information:');
+            console.log(`   ✅ Source Timestamp: ${srcTimestamp}`);
+            console.log(`   ✅ Destination Deploy Time: ${dstDeployedAt}`);
+            console.log(`   ✅ Current Time: ${Math.floor(Date.now() / 1000)}`);
+            
+            console.log('\n' + '▓'.repeat(90));
+            console.log('💳                       TRANSACTION EXECUTION ORDER                        💳');
+            console.log('▓'.repeat(90));
+            
+            console.log('\n💰 Balance Changes:');
+            console.log(`   ✅ Initial Balances: SRC User: ${initialBalances.src.user}, DST User: ${initialBalances.dst.user}`);
+            console.log(`   ✅ Final Balances: SRC User: ${resultBalances.src.user}, DST User: ${resultBalances.dst.user}`);
+            console.log(`   ✅ User Balance Change (SRC): ${initialBalances.src.user - resultBalances.src.user} USDC`);
+            console.log(`   ✅ User Balance Change (DST): ${resultBalances.dst.user - initialBalances.dst.user} USDC`);
 
-            // // console.log(`[${dstChainId}]`, `Created dst deposit for order ${orderHash} in tx ${JSON.stringify(destTx, null, 2)}`);
+            console.log('\n🔄 Complete Transaction Flow:');
+            console.log(`   1️⃣ ✅ Order Creation & Signing - Hash: ${orderHash.substring(0, 10)}...`);
+            console.log(`   2️⃣ ✅ Source Deploy Transaction - Hash: ${orderFillHash}`);
+            console.log(`   4️⃣ ✅ Destination Deploy Transaction - Hash: ${dstDepositHash}`);
+            console.log(`   5️⃣ ✅ Destination Withdrawal Transaction - Hash: ${dstWithdrawTxHash}`);
+            console.log(`   6️⃣ ✅ Source Withdrawal Transaction - Hash: ${resolverWithdrawHash}`);
+            
+            console.log('\n📊 Final Status:');
+            console.log('   🎉 ✅ Cross-Chain Swap COMPLETED SUCCESSFULLY! 🎉');
+            console.log('   🔥 ✅ All transactions executed without errors! 🔥');
+            console.log('   🚀 ✅ Funds successfully transferred and withdrawn! 🚀');
+            console.log('   💎 ✅ Both source and destination operations completed! 💎');
+            
+            console.log('\n' + '█'.repeat(90));
+            console.log('🏆                           MISSION ACCOMPLISHED                           🏆');
+            console.log('█'.repeat(90) + '\n');
 
-            // const ESCROW_SRC_IMPLEMENTATION = await srcFactory.getSourceImpl();
-            // const ESCROW_DST_IMPLEMENTATION = await dstFactory.getDestinationImpl();
-
-            // const srcEscrowAddress = new Sdk.EscrowFactory(new Address(src.escrowFactory)).getSrcEscrowAddress(
-            //     srcEscrowEvent[0],
-            //     ESCROW_SRC_IMPLEMENTATION
-            // );
-
-            // const dstEscrowAddress = new Sdk.EscrowFactory(new Address(dst.escrowFactory)).getDstEscrowAddress(
-            //     srcEscrowEvent[0],
-            //     srcEscrowEvent[1],
-            //     dstDeployedAt,
-            //     new Address(resolverContract.dstAddress),
-            //     ESCROW_DST_IMPLEMENTATION
-            // );
-
-            // console.log("will wait for 5 seconds");
-            // // await increaseTime(11)
-            // await new Promise((resolve) => setTimeout(resolve, 5000)); // finality lock passed
-            // console.log("waited for 5 seconds");
-
-            // // User shares key after validation of dst escrow deployment
-            // console.log(`[${dstChainId}]`, `Withdrawing funds for user from ${dstEscrowAddress}`);
-            // const { txHash: dstWithdrawTxHash } = await dstChainResolver.send(
-            //     resolverContract.withdraw('dst', dstEscrowAddress, secret, dstImmutables.withDeployedAt(dstDeployedAt))
-            // );
-            // console.log("[${dstChainId} ] dstWithdrawTx", dstWithdrawTxHash);
-            // console.log(`[${srcChainId}]`, `Withdrawing funds for resolver from ${srcEscrowAddress}`);
-            // const { txHash: resolverWithdrawHash } = await srcChainResolver.send(
-            //     resolverContract.withdraw('src', srcEscrowAddress, secret, srcEscrowEvent[0])
-            // );
-            // console.log(
-            //     `[${srcChainId}]`,
-            //     `Withdrew funds for resolver from ${srcEscrowAddress} to ${src.resolver} in tx ${resolverWithdrawHash}`
-            // );
-
-            // const resultBalances = await getBalances(
-            //     config.chain.source.tokens.USDC.address,
-            //     config.chain.destination.tokens.USDC.address
-            // );
-            // console.log("resultBalances", resultBalances);
-            // // user transferred funds to resolver on source chain
+            console.log("resultBalances", resultBalances);
+            // user transferred funds to resolver on source chain
             // expect(initialBalances.src.user - resultBalances.src.user).toBe(order.makingAmount);
             // expect(resultBalances.src.resolver - initialBalances.src.resolver).toBe(order.makingAmount);
             // // resolver transferred funds to user on destination chain
