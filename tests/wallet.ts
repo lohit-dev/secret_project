@@ -107,4 +107,25 @@ export class Wallet {
 
         throw new Error((await receipt?.getResult()) || 'unknown error')
     }
+
+    async sendStatic(param: TransactionRequest) : Promise<string | undefined | null> {
+        // First simulate the transaction to check if it will succeed
+        let x = { ...param, gasLimit: 300_000, from: await this.getAddress() };
+        return x.data;
+
+        // If simulation passes, send the actual transaction
+        // const res = await this.signer.sendTransaction({ ...param, gasLimit: 300_000, from: await this.getAddress() })
+        // console.log("Transaction sent:", JSON.stringify(res, null, 2))
+        // const receipt = await res.wait(1)
+
+        // if (receipt && receipt.status) {
+        //     return {
+        //         txHash: receipt.hash,
+        //         blockTimestamp: BigInt((await receipt.getBlock())!.timestamp),
+        //         blockHash: receipt.blockHash as string
+        //     }
+        // }
+
+        // throw new Error('Transaction failed')
+    }
 }

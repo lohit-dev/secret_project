@@ -39,7 +39,7 @@ interface IBaseEscrow {
      * @notice Emitted on successful withdrawal.
      * @param secret The secret that unlocks the escrow.
      */
-    event Withdrawal(bytes32 secret);
+    event Withdrawal(bytes32 secret, bytes32 orderHash);
 
     error InvalidCaller();
     error InvalidImmutables();

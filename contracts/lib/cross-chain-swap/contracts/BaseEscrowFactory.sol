@@ -137,7 +137,7 @@ abstract contract BaseEscrowFactory is IEscrowFactory, ResolverValidationExtensi
             IERC20(token).safeTransferFrom(msg.sender, escrow, immutables.amount);
         }
 
-        emit DstEscrowCreated(escrow, dstImmutables.hashlock, dstImmutables.taker);
+        emit DstEscrowCreated(escrow, dstImmutables.hashlock, dstImmutables.taker,  dstImmutables.orderHash);
     }
 
     /**

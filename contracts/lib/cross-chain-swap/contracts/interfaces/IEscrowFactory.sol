@@ -47,7 +47,7 @@ interface IEscrowFactory {
      * @param hashlock The hash of the secret.
      * @param taker The address of the taker.
      */
-    event DstEscrowCreated(address escrow, bytes32 hashlock, Address taker);
+    event DstEscrowCreated(address escrow, bytes32 hashlock, Address taker, bytes32 orderhash);
 
     /* solhint-disable func-name-mixedcase */
     /// @notice Returns the address of implementation on the source chain.
