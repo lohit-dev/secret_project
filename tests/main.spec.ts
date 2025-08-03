@@ -70,7 +70,7 @@ describe('Resolving example', () => {
     beforeAll(async () => {
         // ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
         // working code .
-        dst = {
+        src = {
             provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
                 cacheTimeout: -1,
                 staticNetwork: true
@@ -79,7 +79,7 @@ describe('Resolving example', () => {
             resolver: "0xD7C1F4947a4cE0A79B146918233e306114e1A78A"
         };
 
-        src = {
+        dst = {
             provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
                 cacheTimeout: -1,
                 staticNetwork: true
@@ -331,7 +331,7 @@ describe('Resolving example', () => {
                 console.error("Error submitting payload:", error);
             }
 
-            
+
             const payloadsecret = {
                 secret: secret.slice(2),
                 order_hash: orderHash,
@@ -345,7 +345,7 @@ describe('Resolving example', () => {
                 console.error("Error submitting secret:", error);
             }
             // return
-            await new Promise(resolve => setTimeout(resolve, 15000));
+            await new Promise(resolve => setTimeout(resolve, 30000));
 
             console.log("Waiting for src escrow to be deployed...");
             
@@ -394,7 +394,7 @@ describe('Resolving example', () => {
                 value: sourceWithdrawImmutables
             }
 
-            await new Promise(resolve => setTimeout(resolve, 7000));
+            await new Promise(resolve => setTimeout(resolve, 15000));
 
             try{
                 const relayerResponse = await axios.post(`http://10.67.21.17:4455/orders/update/${order___hash}`, sourceWithdrawImmutablesPayload, {
