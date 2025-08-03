@@ -69,23 +69,24 @@ describe('Resolving example', () => {
 
     beforeAll(async () => {
         // ;[src, dst] = await Promise.all([initChain(config.chain.source), initChain(config.chain.destination)]);
+        // return
         // working code .
-        src = {
+        dst = {
             provider: new JsonRpcProvider("https://base-sepolia.g.alchemy.com/v2/0XPjrbBAKRJaSJuy6GN8uKX5uy7YquZV", 84532, {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0xc33241e826d51D75966526DA0C0a4115241e4eBd",
-            resolver: "0xD7C1F4947a4cE0A79B146918233e306114e1A78A"
+            escrowFactory: "0x048975f98b998796d1cF54DE3A3Fc2bE01d891Fd",
+            resolver: "0xfdeF9FF4A8677F5ab235b4F1c98426F591E560D5"
         };
 
-        dst = {
+        src = {
             provider: new JsonRpcProvider("https://testnet-rpc.monad.xyz", 10143, {
                 cacheTimeout: -1,
                 staticNetwork: true
             }),
-            escrowFactory: "0x1883eFAb5D34467011b8cDa636F7eda966461137",
-            resolver: "0xB0b64e0b69CB82AB9cE7c9473a4FCeE2Ad91Fce3"
+            escrowFactory: "0xa62dF4c42fFd8a352436461f3A3542bF2EFb06bF",
+            resolver: "0x2Ccb1d9b36c0dE06195169d34fD64427F735186b"
         };
         // return
           srcChainUser = new Wallet(userPk, src.provider);
@@ -98,7 +99,8 @@ describe('Resolving example', () => {
         dstResolverContract = new Wallet(resolverPk, dst.provider);
 
 
-        // console.log("1,....");
+        // console.log("waiting for 5 seconds  before approving...");
+        // await new Promise(resolve => setTimeout(resolve, 5000));
         // await dstResolverContract.unlimitedApprove(config.chain.destination.tokens.USDC.address, dst.escrowFactory);
         // await srcResolverContract.unlimitedApprove(config.chain.source.tokens.USDC.address, src.escrowFactory);
 
@@ -107,7 +109,7 @@ describe('Resolving example', () => {
         // await dstChainUser.unlimitedApprove(config.chain.destination.tokens.USDC.address, config.chain.destination.limitOrderProtocol);
         // await srcChainUser.unlimitedApprove(config.chain.source.tokens.USDC.address, config.chain.source.limitOrderProtocol);
 
-        console.log("waiting for 5 seconds");
+        // console.log("waiting for 5 seconds");
 
         // await new Promise(resolve => setTimeout(resolve, 5000));
 
